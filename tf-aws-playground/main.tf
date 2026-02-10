@@ -18,14 +18,19 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_s3_bucket" "example" {
-  bucket = var.bucket_name
-  depends_on = [
-    random_pet.example
-  ]
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}
+
+resource "aws_s3_bucket" "this" {
+  for_each = var.buckets
+
+  bucket = "${each.value.bucket_name}-${random_id.bucket_suffix.hex}"
+  tags   = each.value.tags
 }
 
 resource "random_pet" "example" {
   count  = var.pet_count
   length = 2
 }
+
