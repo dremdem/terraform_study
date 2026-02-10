@@ -6,13 +6,26 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }    
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 resource "aws_s3_bucket" "example" {
-  bucket = "tf-playground-example-123456"
+  bucket = var.bucket_name
+  depends_on = [
+    random_pet.example
+  ]
+}
+
+resource "random_pet" "example" {
+  count  = var.pet_count
+  length = 2
 }
