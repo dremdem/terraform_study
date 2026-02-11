@@ -23,9 +23,14 @@ resource "random_id" "bucket_suffix" {
 }
 
 resource "aws_s3_bucket" "this" {
-  for_each = var.buckets
+  for_each = { 
+    for name, val in
+    var.buckets:
+    name => val
+    if lookup(var.bucket_filter, name, false)
+  }
 
-  bucket = "${each.value.bucket_name}-${random_id.bucket_suffix.hex}"
+  bucket = "${lookup(var.bucket_prefixes, each.key, "null-prefix")}-${each.value.bucket_name}-${random_id.bucket_suffix.hex}"
   tags   = each.value.tags
 }
 

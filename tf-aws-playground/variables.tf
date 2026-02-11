@@ -51,3 +51,21 @@ variable "buckets" {
         }
     }
 }
+
+variable "bucket_filter" {
+    type = map(bool)
+    default = {
+      dev = true
+      prod = false
+    }
+}
+
+variable "bucket_prefixes" {
+    type = map(string)
+
+    default = {
+      dev = "tmp"
+      prod = "data"
+    }
+  
+}
