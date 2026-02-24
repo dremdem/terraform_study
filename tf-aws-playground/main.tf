@@ -39,3 +39,9 @@ resource "random_pet" "example" {
   length = 2
 }
 
+resource "null_resource" "debug" {
+  provisioner "local-exec" {
+    command = "echo ${local.all_of_them}"
+  }
+}
+

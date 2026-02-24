@@ -29,6 +29,21 @@ variable "counts_per_env" {
   }
 }
 
+variable  "number_one" {
+  type = string
+  default = "number_one!"
+}
+
+variable "number_two" {
+  type = string
+  default = "number_two!"
+}
+
+locals {
+  zero_primary = "Mr. Zero!"
+  all_of_them = "${local.zero_primary}-${var.number_one}-${var.number_two}"
+}
+
 variable "buckets" {
     type = map(object({
         bucket_name = string
