@@ -18,14 +18,30 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_s3_bucket" "example" {
-  bucket = var.bucket_name
-  depends_on = [
-    random_pet.example
-  ]
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}
+
+resource "aws_s3_bucket" "this" {
+  for_each = { 
+    for name, val in
+    var.buckets:
+    name => val
+    if lookup(var.bucket_filter, name, false)
+  }
+
+  bucket = "${lookup(var.bucket_prefixes, each.key, "null-prefix")}-${each.value.bucket_name}-${random_id.bucket_suffix.hex}"
+  tags   = each.value.tags
 }
 
 resource "random_pet" "example" {
   count  = var.pet_count
   length = 2
 }
+
+resource "null_resource" "debug" {
+  provisioner "local-exec" {
+    command = "echo ${local.all_of_them}"
+  }
+}
+
