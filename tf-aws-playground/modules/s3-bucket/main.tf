@@ -8,4 +8,7 @@ resource "aws_s3_bucket" "this1" {
     },
     var.extra_tags
   )
+  lifecycle { 
+    ignore_changes = [tags["owner"]] 
+  }
 }
